@@ -16,6 +16,8 @@ from dulwich.repo import Repo
 class GitStore(FSStore):
     __slots__ = ("_autocommit", "_repo")
 
+    author = "GitStore <git@indicium>"
+
     def __init__(self, path=".", extension=".data", autocommit=True):
         super(GitStore, self).__init__(path, extension)
         self._autocommit = autocommit
@@ -27,7 +29,9 @@ class GitStore(FSStore):
 
     def commit(self, message, author=None):
         message += "\n\nCommitted by indicium.git.GitStore"
-        if author: author = author.encode()
+        if author is None:
+            author = self.author
+        author = author.encode()
         self._repo.do_commit(committer=author, author=author,
                 message=message.encode())
 
